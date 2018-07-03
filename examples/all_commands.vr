@@ -1,0 +1,15 @@
+OUT "Enter your favorite number: "  // Print string to the user
+INP fav_num                         // Store user input in variable (string) fav_num
+INT fav_num                         // Convert the string fav_num to an integer, if possible
+VAR counter 1                       // Assign 1 to variable counter
+
+WHL fav_num                         // As long as fav_num does not equal 0, enter the following code block
+    OUT "Counting: "                // Print string to the user
+    STR counter                     // Convert the integer counter to a string
+    OUT counter                     // Print counter value to the user
+    INT counter                     // Convert the string counter back to an integer
+    OUT 10                          // Print new line (ascii 10 = new line)
+
+    INC counter 1                   // Increment counter by 1
+    DEC fav_num 1                   // Decrement fav_num by 1
+END   

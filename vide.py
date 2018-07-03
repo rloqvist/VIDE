@@ -1,39 +1,68 @@
-from tkinter import *
+from tkinter import filedialog, Tk, Frame, Text, DISABLED
 from vide.gui import Editor
+import os
+import var
 
-def callback(event):
-    content = editor.text.get("1.0", "end")[:-1]
-    '''
-    with open("runfile.py", "w") as dump:
-        dump.write(content)
-    '''
-    print(content)
+class MainWindow(Tk):
+    def __init__(self, *args, **kwargs):
+        Tk.__init__(self, *args, **kwargs)
 
-root = Tk()
+        self.filename = ''
+        self.saved = True
+        self.title('Vide %s' % self.filename)
 
-root.columnconfigure(0, weight=1)
-#root.columnconfigure(1, weight=13)
-root.rowconfigure(0, weight=1)
-root.rowconfigure(1, weight=13)
+        self.last_text_length = None
+        self.geometry("800x600")
 
-editFrame = Frame(root)
-textFrame = Frame(root)
+        self.columnconfigure(0, weight=1)
+        self.rowconfigure(0, weight=1)
 
-#lftGrid.grid(row=0, column=0, sticky="NWSE")
-editFrame.grid(row=0, column=0, sticky="NWSE")
-textFrame.grid(row=1, column=0)
+        self.editFrame = Frame(self)
+        self.editFrame.grid(row=0, column=0, sticky="NWSE")
 
+        self.editor = Editor(self.editFrame)
+        self.editor.pack(expand=True, fill="both")
 
-editor = Editor(editFrame)
-output = Text(textFrame, wrap="word", state=DISABLED, width=650)
+        self.bind("<Control-Key-s>", self.save_file)
+        self.bind("<Control-Key-o>", self.open_file)
+        self.bind("<F5>", self.run_file)
 
-editor.pack(expand=True, fill="both")
-output.pack(fill="both")
+    def save_file(self, event):
+        self.title('Vide %s' % self.filename)
+        text = self.editor.text.get("1.0", "end")[:-1]
+        if not self.filename:
+            self.filename = filedialog.asksaveasfilename(initialdir=".", title="Select file", filetypes=(("All files","*.*"),("VAR files","*.vr")))
+        with open(self.filename, 'w') as handle:
+            handle.write(text)
 
-root.geometry("800x600")
+    def open_file(self, event):
+        self.filename = filedialog.askopenfilename(initialdir=".", title="Select file", filetypes=(("All files","*.*"),("VAR files","*.vr")))
+        self.title('Vide %s' % self.filename)
+        with open(self.filename, 'r') as handle:
+            text = handle.read()
+        self.editor.set_text(text)
+        self.editor.text.focus()
 
-root.bind("<Control-Key-s>", callback)
+    def run_file(self, event):
+        if not self.saved:
+            print("You must save first")
+        if not self.filename:
+            print("There is no filename specified")
+        else:
+            # redirect io for inline console
+            cmd = "python3 var.py %s" % self.filename
+            os.system(cmd)
 
-#print(dir())
+    def check_edited(self):
+        if self.last_text_length:
+            text_length = len(self.editor.text.get("1.0", "end")[:-1])
+            self.saved = text_length == self.last_text_length
+            if not self.saved:
+                self.last_text_length = text_length
+                self.title('* Vide %s' % self.filename)
+        else:
+            self.last_text_length = len(self.editor.text.get("1.0", "end")[:-1])
 
-root.mainloop()
+if __name__ == "__main__":
+    root = MainWindow()
+    root.mainloop()

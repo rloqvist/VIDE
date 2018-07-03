@@ -3,11 +3,6 @@ import time
 from vide.highlight import Highlighter
 import os
 
-def callback(event):
-    tag = event.widget.find_closest(event.x, event.y)
-    txt = event.widget.itemcget(tag, "text")
-    print(txt)
-
 class CustomText(tk.Text):
     def __init__(self, *args, **kwargs):
         tk.Text.__init__(self, *args, **kwargs)
@@ -59,7 +54,6 @@ class TextLineNumbers(tk.Canvas):
             linenum = str(i).split(".")[0]
             txt = self.create_text(2,y,anchor="nw", text=linenum)
             i = self.textwidget.index("%s+1line" % i)
-            self.tag_bind(txt, '<ButtonPress-1>', callback)
 
 class Editor(tk.Frame):
     def __init__(self, *args, **kwargs):
@@ -81,10 +75,10 @@ class Editor(tk.Frame):
         self.text.bind("<<Change>>", self._on_change)
         self.text.bind("<Configure>", self._on_change)
 
-        with open("examples/test.vr", "r") as handle:
-            text = handle.read()
+    def set_text(self, text):
         self.text.insert("end", text)
 
     def _on_change(self, event):
         self.linenumbers.redraw()
         self.highlighter.color()
+        self.winfo_toplevel().check_edited()

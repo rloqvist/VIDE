@@ -3,9 +3,9 @@ VAR a2 a            // Copy a so that we can play with it
 VAR not_a 1         // Assume that "not a" is true, change in next step if incorrect
 
 WHL a2              // Set "not a"
-    VAR not_a 0
-    VAR a2 0
-END
+    VAR not_a 0     
+    VAR a2 0        
+END                 
 
 WHL a               // If
     OUT "True"
