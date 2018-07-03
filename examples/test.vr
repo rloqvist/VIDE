@@ -1,0 +1,17 @@
+VAR a 1             // Boolean (1 = true, 0 = false)
+VAR a2 a            // Copy a so that we can play with it
+VAR not_a 1         // Assume that "not a" is true, change in next step if incorrect
+
+WHL a2              // Set "not a"
+    VAR not_a 0
+    VAR a2 0
+END
+
+WHL a               // If
+    OUT "True"
+    VAR a 0
+END
+WHL not_a           // Else
+    OUT "False"
+    VAR not_a 0
+END
