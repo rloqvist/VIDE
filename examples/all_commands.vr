@@ -12,4 +12,4 @@ WHL fav_num                         // As long as fav_num does not equal 0, ente
 
     INC counter 1                   // Increment counter by 1
     DEC fav_num 1                   // Decrement fav_num by 1
-END   
+END

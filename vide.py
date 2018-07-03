@@ -34,6 +34,7 @@ class MainWindow(Tk):
             self.filename = filedialog.asksaveasfilename(initialdir=".", title="Select file", filetypes=(("All files","*.*"),("VAR files","*.vr")))
         with open(self.filename, 'w') as handle:
             handle.write(text)
+            self.saved = True
 
     def open_file(self, event):
         self.filename = filedialog.askopenfilename(initialdir=".", title="Select file", filetypes=(("All files","*.*"),("VAR files","*.vr")))
